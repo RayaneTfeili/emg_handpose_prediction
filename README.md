@@ -88,13 +88,6 @@ How much variance is explained by the model:
 - **Per-joint breakdown**: identify which fingers/joints are harder
 - **Latency** (if real-time): ms per window on CPU
 
-> If you have the values, add a small table like:
-> | Model | Features | MAE ↓ | RMSE ↓ | R² ↑ |
-> |------|----------|-------|--------|------|
-> | Ridge | TD features | ... | ... | ... |
-> | Random Forest | TD features | ... | ... | ... |
-> | Neural Net | raw window | ... | ... | ... |
-> | Riemannian + regressor | cov tangent | ... | ... | ... |
 
 ---
 
