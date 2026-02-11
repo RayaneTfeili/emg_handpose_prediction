@@ -1,50 +1,116 @@
 # EMG Hand Pose Prediction (51 Joints) 
-**Real-time regression of 51 hand-joint positions from multi-channel EMG (8 forearm sensors).** :contentReference[oaicite:0]{index=0}
+**Multi-model pipeline to predict 51 hand-joint positions from 8-channel forearm EMG, with a strong baseline suite + Riemannian geometry features.**
 
-> This project tackles a challenging **biosignal-to-kinematics** mapping problem: decoding noisy, non-stationary EMG streams into a high-dimensional hand pose representation suitable for **HCI/AR/VR**, **robotic teleoperation**, **rehabilitation**, and **assistive tech**.
-
----
-
-## Why this is interesting (for an AI Engineer)
-- **High-dimensional structured regression**: predict **51 joints** (multi-output) rather than a simple class label. :contentReference[oaicite:1]{index=1}  
-- **Signal ML in the real world**: EMG requires robust preprocessing, windowing, normalization, and careful evaluation due to drift and subject variability.
-- **Real-time constraints**: the pipeline is designed with **streaming inference** in mind (low-latency sliding windows, stable predictions). :contentReference[oaicite:2]{index=2}  
-- **End-to-end deliverable**: a single notebook contains the full workflow and produces an exportable prediction file (`team_submission.csv`). :contentReference[oaicite:3]{index=3}
+This repository explores **biosignal-to-kinematics** learning: mapping noisy, non-stationary EMG time-series into a high-dimensional hand pose representation. The focus is on **robust baselines**, **feature engineering for EMG**, and **reproducible evaluation**.
 
 ---
 
-## Problem statement
-Given an 8-channel EMG stream from forearm sensors, estimate the corresponding hand pose as **51 joint positions** in real time. :contentReference[oaicite:4]{index=4}
-
-- **Input**: EMG time-series, 8 channels (forearm sensors) :contentReference[oaicite:5]{index=5}  
-- **Output**: 51 joint positions (pose vector; exact format depends on the dataset/benchmark) :contentReference[oaicite:6]{index=6}  
+## Key contributions (what a recruiter should notice)
+- **Model suite, not a single attempt**: linear (Ridge), tree-based (Random Forest), deep learning (Neural Network), and **Riemannian geometry**-based approaches.
+- **Signal-aware feature pipeline**: windowing + normalization + features tailored to EMG.
+- **Clear evaluation protocol**: multi-output regression metrics + per-joint breakdown.
+- **Reproducible workflow**: training → validation → prediction export (`team_submission.csv`) in one place.
 
 ---
 
-## Approach (system-level)
-1. **Streaming windowing**  
-   Convert raw EMG into fixed-length overlapping windows (sliding window) to enable continuous predictions.
-2. **Preprocessing (typical EMG)**  
-   Normalization (per-channel), optional rectification / smoothing, and drift-robust scaling.
-3. **Modeling**  
-   A regression model maps each EMG window → pose vector (multi-target regression).  
-   *(The notebook is the source of truth for the chosen architecture and hyperparameters.)*
-4. **Post-processing (optional but useful for demos)**  
-   Temporal smoothing / EMA to stabilize jitter in real-time visualization.
-5. **Export**  
-   Predictions are written to `team_submission.csv` for evaluation/submission. :contentReference[oaicite:7]{index=7}
+## Problem
+Given an **8-channel EMG stream**, predict **51 hand joint values** (multi-output regression; e.g., 51 joints × coordinates depending on the dataset format).
+
+- **Input**: EMG (8 sensors), time-series
+- **Output**: hand pose vector for 51 joints
+
+---
+
+## Methods
+### 1) Ridge Regression (strong linear baseline)
+A reliable baseline for high-dimensional regression with L2 regularization.
+- Pros: fast, stable, good sanity check
+- Useful to quantify how much “non-linearity” is actually needed
+
+### 2) Random Forest Regressor (non-linear baseline)
+Handles non-linear interactions between channels/features and can work well with engineered EMG features.
+- Pros: strong baseline without heavy tuning, interpretable feature importance
+- Cons: can be heavier for real-time and struggles with smooth temporal outputs
+
+### 3) Neural Network Regressor (learned non-linear mapping)
+A neural regressor trained on windowed EMG representations.
+- Pros: flexible, can learn complex mappings
+- Cons: needs careful regularization and evaluation to avoid overfitting subject/session patterns
+
+### 4) Riemannian Geometry (covariance-manifold features)
+We leverage the structure of **covariance matrices** computed over EMG windows:
+- Build SPD covariance matrices per window (Symmetric Positive Definite)
+- Map SPD matrices to a tangent space / apply Riemannian metrics
+- Train a regressor on these geometry-aware embeddings
+
+Why it matters:
+- Covariance captures channel interactions robustly
+- Riemannian approaches are widely used in biosignals (EEG/EMG) due to **stability under noise and variability**
+
+---
+
+## Pipeline
+1. **Windowing (sliding windows)**: convert streaming EMG into fixed-length segments  
+2. **Preprocessing**: per-channel normalization (and optional smoothing)  
+3. **Feature extraction** (depending on model):
+   - raw window vector / handcrafted EMG features (time-domain)
+   - covariance matrices → Riemannian embeddings
+4. **Training**: Ridge / Random Forest / Neural Net / Riemannian-based regression
+5. **Evaluation**: multi-output regression metrics + per-joint analysis
+6. **Export**: `team_submission.csv`
+
+---
+
+## Metrics (multi-output regression)
+We evaluate pose prediction quality using standard regression metrics:
+
+### **MAE (Mean Absolute Error)**
+Measures average absolute deviation per output dimension:
+\[
+MAE = \frac{1}{N}\sum_{i=1}^{N} |y_i - \hat{y}_i|
+\]
+- Interpretable, robust to outliers
+
+### **MSE / RMSE**
+Penalizes larger errors more strongly:
+\[
+MSE = \frac{1}{N}\sum_{i=1}^{N} (y_i - \hat{y}_i)^2,\quad
+RMSE = \sqrt{MSE}
+\]
+- Good when large pose errors are particularly harmful
+
+### **R² (coefficient of determination)** *(optional but recruiter-friendly)*
+How much variance is explained by the model:
+- Useful for comparing baselines across targets
+
+### Recommended reporting (to look professional)
+- **Global metric**: MAE/RMSE averaged over all joints
+- **Per-joint breakdown**: identify which fingers/joints are harder
+- **Latency** (if real-time): ms per window on CPU
+
+> If you have the values, add a small table like:
+> | Model | Features | MAE ↓ | RMSE ↓ | R² ↑ |
+> |------|----------|-------|--------|------|
+> | Ridge | TD features | ... | ... | ... |
+> | Random Forest | TD features | ... | ... | ... |
+> | Neural Net | raw window | ... | ... | ... |
+> | Riemannian + regressor | cov tangent | ... | ... | ... |
 
 ---
 
 ## Repository structure
-- `projet_sfml.ipynb` — main notebook (data pipeline → training → inference/export). :contentReference[oaicite:8]{index=8}  
-- `team_submission.csv` — example output file containing model predictions. :contentReference[oaicite:9]{index=9}  
-- `README.md` — project documentation.
+- `projet_sfml.ipynb` — end-to-end training & evaluation notebook
+- `team_submission.csv` — example exported predictions
+- `README.md` — documentation
 
 ---
 
 ## Quickstart
-### 1) Clone
 ```bash
 git clone https://github.com/RayaneTfeili/emg_handpose_prediction.git
 cd emg_handpose_prediction
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -U pip
+pip install numpy pandas scikit-learn jupyter matplotlib
+jupyter notebook
