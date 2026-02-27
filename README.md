@@ -33,7 +33,7 @@ Handles non-linear interactions between channels/features and can work well with
 - Cons: take much more time to train than the Ridge Regression
 
 
-### 3) Neural Network Regressor (learned non-linear mapping)
+### 3) Neural Network
 A neural regressor trained on windowed EMG representations.
 - Pros: flexible, can learn complex mappings
 - Cons: needs careful regularization and evaluation to avoid overfitting 
