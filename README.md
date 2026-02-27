@@ -30,12 +30,13 @@ A reliable baseline for high-dimensional regression with L2 regularization.
 ### 2) Random Forest Regressor (non-linear baseline)
 Handles non-linear interactions between channels/features and can work well with engineered EMG features.
 - Pros: strong baseline without heavy tuning, interpretable feature importance
-- Cons: can be heavier for real-time and struggles with smooth temporal outputs
+- Cons: take much more time to train than the Ridge Regression
+
 
 ### 3) Neural Network Regressor (learned non-linear mapping)
 A neural regressor trained on windowed EMG representations.
 - Pros: flexible, can learn complex mappings
-- Cons: needs careful regularization and evaluation to avoid overfitting subject/session patterns
+- Cons: needs careful regularization and evaluation to avoid overfitting 
 
 ### 4) Riemannian Geometry (covariance-manifold features)
 We leverage the structure of **covariance matrices** computed over EMG windows:
@@ -53,7 +54,7 @@ Why it matters:
 1. **Windowing (sliding windows)**: convert streaming EMG into fixed-length segments  
 2. **Preprocessing**: per-channel normalization (and optional smoothing)  
 3. **Feature extraction** (depending on model):
-   - raw window vector / handcrafted EMG features (time-domain)
+   - raw window vector / handcrafted EMG features
    - covariance matrices → Riemannian embeddings
 4. **Training**: Ridge / Random Forest / Neural Net / Riemannian-based regression
 5. **Evaluation**: multi-output regression metrics + per-joint analysis
@@ -69,7 +70,7 @@ Measures average absolute deviation per output dimension:
 \[
 MAE = \frac{1}{N}\sum_{i=1}^{N} |y_i - \hat{y}_i|
 \]
-- Interpretable, robust to outliers
+
 
 ### **MSE / RMSE**
 Penalizes larger errors more strongly:
@@ -77,16 +78,6 @@ Penalizes larger errors more strongly:
 MSE = \frac{1}{N}\sum_{i=1}^{N} (y_i - \hat{y}_i)^2,\quad
 RMSE = \sqrt{MSE}
 \]
-- Good when large pose errors are particularly harmful
-
-### **R² (coefficient of determination)** *(optional but recruiter-friendly)*
-How much variance is explained by the model:
-- Useful for comparing baselines across targets
-
-### Recommended reporting (to look professional)
-- **Global metric**: MAE/RMSE averaged over all joints
-- **Per-joint breakdown**: identify which fingers/joints are harder
-- **Latency** (if real-time): ms per window on CPU
 
 
 ---
