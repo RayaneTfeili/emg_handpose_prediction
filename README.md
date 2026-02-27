@@ -5,7 +5,7 @@ This repository explores **biosignal-to-kinematics** learning: mapping noisy, no
 
 ---
 
-## Key contributions (what a recruiter should notice)
+## Key contributions 
 - **Model suite, not a single attempt**: linear (Ridge), tree-based (Random Forest), deep learning (Neural Network), and **Riemannian geometry**-based approaches.
 - **Signal-aware feature pipeline**: windowing + normalization + features tailored to EMG.
 - **Clear evaluation protocol**: multi-output regression metrics + per-joint breakdown.
