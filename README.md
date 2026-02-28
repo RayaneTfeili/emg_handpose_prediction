@@ -1,4 +1,9 @@
 # EMG Hand Pose Prediction (51 Joints)
+![Python](https://img.shields.io/badge/Made%20with-Python-blue?logo=python&logoColor=white)
+![ML](https://img.shields.io/badge/Models-Ridge%20%7C%20RF%20%7C%20NN%20%7C%20Riemannian-lightblue)
+![Task](https://img.shields.io/badge/Task-Multi--Output%20Regression-orange)
+![Status](https://img.shields.io/badge/Status-Completed-success)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 **Prediction of 51 hand joint positions from 8-channel EMG signals**
 
