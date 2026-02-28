@@ -46,6 +46,7 @@ To further reduce dimensionality and handle correlations between features, we ap
 PCA also helps reduce noise, since noise typically contributes less variance than the actual muscle signals.
 
 However, PCA reduces interpretability because the components are linear combinations of the original features. For this reason, some models (such as Neural Networks) are trained without PCA.
+
 ---
 
 ### Cross-Validation
@@ -90,20 +91,7 @@ Model Performance was evaluated using:
 
 ---
 
-##  Project Structure
 
-```
-emg_handpose_prediction/
-│
-├── projet_sfml.ipynb          # Main training & evaluation notebook
-├── preprocessing/             # Windowing & feature extraction
-├── models/                    # Model implementations
-├── evaluation/                # Metrics & comparison scripts
-├── team_submission.csv        # Final predictions
-└── README.md
-```
-
----
 
 ## 📌 Results
 
