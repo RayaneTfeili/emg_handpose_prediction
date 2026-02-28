@@ -93,11 +93,14 @@ Model Performance was evaluated using:
 
 
 
-## 📌 Results
+##  Results
 
 Models are compared using regression metrics and visualized to highlight performance differences.
 
 The best-performing model can be selected based on RMSE or MAE.
+
+![RMSE Comparison](rmse_comparison.png)
+
 
 ---
 
@@ -111,7 +114,7 @@ Team members:
 - Tfeili Rayane
 ---
 
-## 📦 Installation
+##  Installation
 
 ```bash
 git clone https://github.com/RayaneTfeili/emg_handpose_prediction.git
@@ -125,6 +128,6 @@ jupyter notebook
 
 ---
 
-## 📜 License
+##  License
 
 MIT License.
